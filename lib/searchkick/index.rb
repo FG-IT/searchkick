@@ -228,7 +228,11 @@ module Searchkick
 
     def create_index(index_options: nil)
       index_options ||= self.index_options
-      index = Searchkick::Index.new("#{name}_#{Time.now.strftime('%Y%m%d%H%M%S%L')}", @options)
+      if Searchkick.index_with_timestamp
+        index = Searchkick::Index.new("#{name}_#{Time.now.strftime('%Y%m%d%H%M%S%L')}", @options)
+      else
+        index = Searchkick::Index.new(name, @options)
+      end
       index.create(index_options)
       index
     end
