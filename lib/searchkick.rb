@@ -40,7 +40,7 @@ module Searchkick
   class ImportError < Error; end
 
   class << self
-    attr_accessor :search_method_name, :wordnet_path, :timeout, :models, :client_options, :redis, :index_prefix, :index_suffix, :queue_name, :model_options
+    attr_accessor :search_method_name, :wordnet_path, :timeout, :models, :client_options, :redis, :index_prefix, :index_suffix, :index_with_timestamp, :queue_name, :model_options
     attr_writer :client, :env, :search_timeout
     attr_reader :aws_credentials
   end
@@ -51,6 +51,7 @@ module Searchkick
   self.client_options = {}
   self.queue_name = :searchkick
   self.model_options = {}
+  self.index_with_timestamp = true
 
   def self.client
     @client ||= begin
