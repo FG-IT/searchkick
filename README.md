@@ -538,6 +538,16 @@ If a reindex is interrupted, you can resume it with:
 Product.reindex(resume: true)
 ```
 
+If you want to manual index data after reindex, you can run:
+```ruby
+Product.full_index
+```
+
+If you want to manual index data to a specific index after reindex, you can run:
+```ruby
+Product.full_index(index_name: 'your-index-name-goes-here')
+```
+
 For large data sets, try [parallel reindexing](#parallel-reindexing).
 
 ### To Reindex, or Not to Reindex
