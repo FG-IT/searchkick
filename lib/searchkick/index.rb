@@ -198,6 +198,22 @@ module Searchkick
       Searchkick::ReindexQueue.new(name)
     end
 
+    # full_index
+
+    def full_index(relation, method_name, scoped:, **options)
+      refresh = options.fetch(:refresh, !scoped)
+      options.delete(:refresh)
+
+      indice_name = all_indices.sort.last
+      if indice_name.nil?
+        reindex relation, method_name, scoped, full: true, scope: nil, **options
+      else
+        index = Searchkick::Index.new(indice_name, @options)
+        index.import_scope(relation, method_name)
+        index.refresh if refresh
+      end
+    end
+
     # reindex
 
     def reindex(relation, method_name, scoped:, full: false, scope: nil, **options)
@@ -228,11 +244,7 @@ module Searchkick
 
     def create_index(index_options: nil)
       index_options ||= self.index_options
-      if Searchkick.index_with_timestamp
-        index = Searchkick::Index.new("#{name}_#{Time.now.strftime('%Y%m%d%H%M%S%L')}", @options)
-      else
-        index = Searchkick::Index.new(name, @options)
-      end
+      index = Searchkick::Index.new("#{name}_#{Time.now.strftime('%Y%m%d%H%M%S%L')}", @options)
       index.create(index_options)
       index
     end
