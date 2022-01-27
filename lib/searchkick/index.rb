@@ -204,13 +204,13 @@ module Searchkick
       refresh = options.fetch(:refresh, !scoped)
       options.delete(:refresh)
 
-      indice_name = opitons.delete(:index_name)
+      indice_name = options.delete(:index_name)
       indice_name ||= all_indices.sort.last
       if indice_name.nil?
-        reindex relation, method_name, scoped, full: true, scope: nil, **options
+        reindex relation, method_name, scoped: scoped, full: true, scope: nil, **options
       else
         index = Searchkick::Index.new(indice_name, @options)
-        index.import_scope(relation, method_name)
+        index.import_scope(relation)
         index.refresh if refresh
       end
     end
