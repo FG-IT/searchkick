@@ -250,6 +250,34 @@ module Searchkick
       index
     end
 
+    def replace_indice(index_options: nil)
+      index = create_index
+      if alias_exists?
+        promote(index.name)
+      else
+        delete if exists?
+        promote(index.name)
+      end
+      clean_indices
+
+      current_indices = all_indices
+      current_indices.size == 1 && current_indices.include?(index.name)
+    end
+
+    def ensure_alias
+      while !alias_exists? do
+        delete if exists?
+
+        latest_index_name = all_indices.sort.last
+        if latest_index_name.nil?
+          replace_indice
+        else
+          promote(latest_index_name)
+        end
+      end
+      clean_indices
+    end
+
     def import_scope(relation, **options)
       bulk_indexer.import_scope(relation, **options)
     end
